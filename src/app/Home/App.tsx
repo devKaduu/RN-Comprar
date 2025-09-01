@@ -1,4 +1,4 @@
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 
 import { Button } from "@/components/Button";
 import { Filter } from "@/components/Filter";
@@ -8,6 +8,24 @@ import { FilterStatus } from "@/types/FilterStatus";
 import { styles } from "./styles";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE];
+
+const ITEMS = [
+  {
+    id: "1",
+    status: FilterStatus.DONE,
+    description: "1 pacote de café",
+  },
+  {
+    id: "2",
+    status: FilterStatus.PENDING,
+    description: "3 pacotes de macarrão",
+  },
+  {
+    id: "3",
+    status: FilterStatus.PENDING,
+    description: "3 cebolas",
+  },
+];
 
 export function Home() {
   return (
@@ -24,16 +42,30 @@ export function Home() {
           {FILTER_STATUS.map((status) => (
             <Filter key={status} status={status} isActive />
           ))}
+
+          <TouchableOpacity style={styles.clearButton}>
+            <Text style={styles.clearText}>Limpar</Text>
+          </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.clearButton}>
-          <Text style={styles.clearText}>Limpar</Text>
-        </TouchableOpacity>
-
-        <Item
-          data={{ status: FilterStatus.PENDING, description: "Item 1" }}
-          onStatus={() => {}}
-          onRemove={() => {}}
+        <FlatList
+          data={ITEMS}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <Item
+              data={{ status: item.status, description: item.description }}
+              onRemove={() => {}}
+              onStatus={() => {}}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          contentContainerStyle={styles.listContent}
+          ListEmptyComponent={() => (
+            <View>
+              <Text style={styles.emptyText}>Nenhum item encontrado</Text>
+            </View>
+          )}
         />
       </View>
     </View>
